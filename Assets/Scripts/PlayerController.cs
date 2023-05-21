@@ -15,12 +15,18 @@ public class PlayerController : MonoBehaviour {
 	// Create private references to the rigidbody component on the player, and the count of pick up objects picked up so far
 	private Rigidbody rb;
 	private int count;
+	private AudioSource audioSource;
+
+	
 
 	// At the start of the game..
 	void Start ()
 	{
 		// Assign the Rigidbody component to our private rb variable
 		rb = GetComponent<Rigidbody>();
+
+		// Assign the AudioSource component to our private audioSource variable
+		audioSource = GetComponent<AudioSource>();
 
 		// Set the count to zero 
 		count = 0;
@@ -30,6 +36,7 @@ public class PlayerController : MonoBehaviour {
 
 		// Set the text property of our Win Text UI to an empty string, making the 'You Win' (game over message) blank
 		winText.text = "";
+
 	}
 
 	// Each physics step..
@@ -49,21 +56,43 @@ public class PlayerController : MonoBehaviour {
 
 	// When this game object intersects a collider with 'is trigger' checked, 
 	// store a reference to that collider in a variable named 'other'..
-	void OnTriggerEnter(Collider other) 
+	void OnTriggerEnter(Collider other)
 	{
 		// ..and if the game object we intersect has the tag 'Pick Up' assigned to it..
-		if (other.gameObject.CompareTag ("Pick Up"))
+		if (other.gameObject.CompareTag("Pick Up"))
 		{
 			// Make the other game object (the pick up) inactive, to make it disappear
-			other.gameObject.SetActive (false);
+			other.gameObject.SetActive(false);
 
 			// Add one to the score variable 'count'
 			count = count + 1;
 
 			// Run the 'SetCountText()' function (see below)
-			SetCountText ();
+			SetCountText();
+
+
+			audioSource.Play();
+
+		}
+
+
+	}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.CompareTag("Enemy"))
+		{
+			// Destroy the current object
+			Destroy(gameObject);
+
+			// Set the text to "You Lose!"
+			winText.text = "You Lose!";
+
+			// play explosion effect
+			collision.gameObject.GetComponent<AudioSource>().Play();
 		}
 	}
+
 
 	// Create a standalone function that can update the 'countText' UI and check if the required amount to win has been achieved
 	void SetCountText()
