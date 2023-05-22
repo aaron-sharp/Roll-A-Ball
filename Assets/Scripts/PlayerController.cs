@@ -2,6 +2,7 @@
 
 // Include the namespace required to use Unity UI
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 using System.Collections;
 
@@ -76,7 +77,7 @@ public class PlayerController : MonoBehaviour {
 
 			audioSource.Play();
 
-			// play and destroy explosion fx
+			// play and destroy pickup fx
 			var currentPickupFX = Instantiate(pickupFX, other.transform.position, other.transform.rotation);
 			Destroy(currentPickupFX, 3);
 
@@ -101,6 +102,8 @@ public class PlayerController : MonoBehaviour {
 			// play explosion sound
 			collision.gameObject.GetComponent<AudioSource>().Play();
 
+			GameManager.Instance.ReloadScene();
+
 
 		}
 	}
@@ -113,10 +116,22 @@ public class PlayerController : MonoBehaviour {
 		countText.text = "Count: " + count.ToString ();
 
 		// Check if our 'count' is equal to or exceeded 12
-		if (count >= 12) 
+		if (count >= 2) 
 		{
 			// Set the text value of our 'winText'
 			winText.text = "You Win!";
+
+			// remove enemy
+			Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+
+			// remove this script so that you can't continue to get points and move around
+			Destroy(GetComponent<PlayerController>());
+
+			GameManager.Instance.ReloadScene();
+
 		}
 	}
+
+
+
 }
