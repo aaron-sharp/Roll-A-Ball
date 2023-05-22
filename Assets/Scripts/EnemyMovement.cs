@@ -6,10 +6,14 @@ public class EnemyMovement : MonoBehaviour
     public Transform player;
     private NavMeshAgent navMeshAgent;
 
+    private Animator anim;
+
 
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        anim = GetComponentInChildren<Animator>();
+        anim.SetFloat("Speed_f", navMeshAgent.speed);
     }
 
     private void Update()
@@ -17,6 +21,8 @@ public class EnemyMovement : MonoBehaviour
         if (player != null)
         {
             navMeshAgent.SetDestination(player.position);
+            
+
         }
     }
 

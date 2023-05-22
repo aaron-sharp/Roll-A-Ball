@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour {
 	public GameObject explosionFX;
 	public GameObject pickupFX;
 
-
 	// Create private references to the rigidbody component on the player, and the count of pick up objects picked up so far
 	private Rigidbody rb;
 	private int count;
@@ -56,6 +55,12 @@ public class PlayerController : MonoBehaviour {
 		// Add a physical force to our Player rigidbody using our 'movement' Vector3 above, 
 		// multiplying it by 'speed' - our public player speed that appears in the inspector
 		rb.AddForce (movement * speed);
+
+		// human movement
+		//transform.Translate(Vector3.forward * moveVertical * speed * Time.deltaTime);
+		//transform.Rotate(Vector3.up * moveHorizontal * speed * Time.deltaTime);
+
+
 	}
 
 	// When this game object intersects a collider with 'is trigger' checked, 
@@ -73,7 +78,6 @@ public class PlayerController : MonoBehaviour {
 
 			// Run the 'SetCountText()' function (see below)
 			SetCountText();
-
 
 			audioSource.Play();
 
@@ -98,13 +102,16 @@ public class PlayerController : MonoBehaviour {
 
 			// Set the text to "You Lose!"
 			winText.text = "You Lose!";
+			AnimateText();
 
 			// play explosion sound
 			collision.gameObject.GetComponent<AudioSource>().Play();
 
 			GameManager.Instance.ReloadScene();
 
+			collision.gameObject.GetComponentInChildren<Animator>().SetFloat("Speed_f", 0);
 
+			
 		}
 	}
 
@@ -116,10 +123,11 @@ public class PlayerController : MonoBehaviour {
 		countText.text = "Count: " + count.ToString ();
 
 		// Check if our 'count' is equal to or exceeded 12
-		if (count >= 2) 
+		if (count >= 5) 
 		{
 			// Set the text value of our 'winText'
 			winText.text = "You Win!";
+			AnimateText();
 
 			// remove enemy
 			Destroy(GameObject.FindGameObjectWithTag("Enemy"));
@@ -133,5 +141,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 
+	private void AnimateText()
+    {
+		winText.gameObject.GetComponent<Animator>().SetTrigger("AnimateText");
+    }
 
 }
