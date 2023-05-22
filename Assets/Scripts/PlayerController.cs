@@ -11,6 +11,9 @@ public class PlayerController : MonoBehaviour {
 	public float speed;
 	public Text countText;
 	public Text winText;
+	public ParticleSystem explosionFX;
+	public ParticleSystem pickupFX;
+
 
 	// Create private references to the rigidbody component on the player, and the count of pick up objects picked up so far
 	private Rigidbody rb;
@@ -73,6 +76,9 @@ public class PlayerController : MonoBehaviour {
 
 			audioSource.Play();
 
+			// play explosion fx
+			pickupFX.Play();
+
 		}
 
 
@@ -88,8 +94,11 @@ public class PlayerController : MonoBehaviour {
 			// Set the text to "You Lose!"
 			winText.text = "You Lose!";
 
-			// play explosion effect
+			// play explosion sound
 			collision.gameObject.GetComponent<AudioSource>().Play();
+
+			// play explosion fx
+			explosionFX.Play();
 		}
 	}
 

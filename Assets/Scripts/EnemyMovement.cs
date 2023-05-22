@@ -6,6 +6,7 @@ public class EnemyMovement : MonoBehaviour
     public Transform player;
     private NavMeshAgent navMeshAgent;
 
+
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -18,4 +19,7 @@ public class EnemyMovement : MonoBehaviour
             navMeshAgent.SetDestination(player.position);
         }
     }
+
+
+
 }
