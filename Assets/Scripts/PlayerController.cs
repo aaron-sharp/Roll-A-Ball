@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour {
 	public Text countText;
 	public Text winText;
 	public ParticleSystem explosionFX;
-	public ParticleSystem pickupFX;
+	public GameObject pickupFX;
 
 
 	// Create private references to the rigidbody component on the player, and the count of pick up objects picked up so far
@@ -76,8 +76,9 @@ public class PlayerController : MonoBehaviour {
 
 			audioSource.Play();
 
-			// play explosion fx
-			pickupFX.Play();
+			// play and destroy explosion fx
+			var currentPickupFX = Instantiate(pickupFX, other.transform.position, other.transform.rotation);
+			Destroy(currentPickupFX, 3);
 
 		}
 
