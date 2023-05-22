@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour {
 	public float speed;
 	public Text countText;
 	public Text winText;
-	public ParticleSystem explosionFX;
+	public GameObject explosionFX;
 	public GameObject pickupFX;
 
 
@@ -89,6 +89,9 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (collision.gameObject.CompareTag("Enemy"))
 		{
+			// play explosion fx
+			Instantiate(explosionFX, transform.position, Quaternion.identity);
+
 			// Destroy the current object
 			Destroy(gameObject);
 
@@ -98,8 +101,7 @@ public class PlayerController : MonoBehaviour {
 			// play explosion sound
 			collision.gameObject.GetComponent<AudioSource>().Play();
 
-			// play explosion fx
-			explosionFX.Play();
+
 		}
 	}
 
