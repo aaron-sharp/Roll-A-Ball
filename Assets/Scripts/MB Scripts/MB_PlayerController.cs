@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MB_PlayerController : MonoBehaviour
 {
@@ -34,12 +36,38 @@ public class MB_PlayerController : MonoBehaviour
     [SerializeField]
     private float victoryForce;
 
+
+    public float speed;
+    public Text countText;
+    public Text winText;
+    public GameObject explosionFX;
+    public GameObject pickupFX;
+
+    private int count;
+    private AudioSource audioSource;
+
     // Start is called before the first frame update
     void Start()
+
     {
         rigidBody = GetComponent<Rigidbody>();  // Get rigidbody component
 
         currentState = State.NORMAL;            // Set current state to WAIT
+
+
+        // Assign the AudioSource component to our private audioSource variable
+        audioSource = GetComponent<AudioSource>();
+
+        // Set the count to zero 
+        count = 0;
+
+        // Run the SetCountText function to update the UI (see below)
+        SetCountText();
+
+        // Set the text property of our Win Text UI to an empty string, making the 'You Win' (game over message) blank
+        winText.text = "";
+
+
     }
 
     void FixedUpdate()
@@ -127,19 +155,75 @@ public class MB_PlayerController : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider other)
-    {
-        //if (currentState == State.NORMAL)
-        //{
-        //    // Player collides with collectible
-        //    if (other.tag == "Collectible")
-        //    {
-        //        Collectible collectible = other.GetComponent<Collectible>();    // Get collectible
+    //public void OnTriggerEnter(Collider other)
+    //{
+    //    //if (currentState == State.NORMAL)
+    //    //{
+    //    //    // Player collides with collectible
+    //    //    if (other.tag == "Collectible")
+    //    //    {
+    //    //        Collectible collectible = other.GetComponent<Collectible>();    // Get collectible
 
-        //        // If collectible has not been picked up
-        //        if (collectible != null && !collectible.pickedUp)
-        //            collectible.PickedUp(transform);
-        //    }
-        //}
+    //    //        // If collectible has not been picked up
+    //    //        if (collectible != null && !collectible.pickedUp)
+    //    //            collectible.PickedUp(transform);
+    //    //    }
+    //    //}
+    //}
+
+    void OnTriggerEnter(Collider other)
+    {
+        // ..and if the game object we intersect has the tag 'Pick Up' assigned to it..
+        if (other.gameObject.CompareTag("Pick Up"))
+        {
+            // Make the other game object (the pick up) inactive, to make it disappear
+            other.gameObject.SetActive(false);
+
+            // Add one to the score variable 'count'
+            count = count + 1;
+
+            // Run the 'SetCountText()' function (see below)
+            SetCountText();
+
+            audioSource.Play();
+
+            // play and destroy pickup fx
+            var currentPickupFX = Instantiate(pickupFX, other.transform.position, other.transform.rotation);
+            Destroy(currentPickupFX, 3);
+
+        }
     }
+
+
+        void SetCountText()
+        {
+            // Update the text field of our 'countText' variable
+            countText.text = "Count: " + count.ToString();
+
+            // Check if our 'count' is equal to or exceeded 12
+            if (count >= 5)
+            {
+                // Set the text value of our 'winText'
+                winText.text = "You Win!";
+                AnimateText();
+
+                // remove enemy
+                Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+
+                // remove this script so that you can't continue to get points and move around
+                Destroy(GetComponent<PlayerController>());
+
+                GameManager.Instance.ReloadScene();
+
+            }
+        }
+
+
+        private void AnimateText()
+        {
+            winText.gameObject.GetComponent<Animator>().SetTrigger("AnimateText");
+        }
+
+
+    
 }
