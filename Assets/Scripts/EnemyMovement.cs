@@ -13,7 +13,8 @@ public class EnemyMovement : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
-        anim.SetFloat("Speed_f", navMeshAgent.speed);
+        if (anim)
+            anim.SetFloat("Speed_f", navMeshAgent.speed);
     }
 
     private void Update()

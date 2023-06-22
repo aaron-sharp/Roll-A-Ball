@@ -143,7 +143,8 @@ public class PlayerController : MonoBehaviour {
 
 	private void AnimateText()
     {
-		winText.gameObject.GetComponent<Animator>().SetTrigger("AnimateText");
+		if(winText.gameObject.GetComponent<Animator>())
+			winText.gameObject.GetComponent<Animator>().SetTrigger("AnimateText");
     }
 
 }
