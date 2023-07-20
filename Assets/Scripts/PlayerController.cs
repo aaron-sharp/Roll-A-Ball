@@ -1,65 +1,70 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour {
-	
-	// Create public variables for player speed, and for the Text UI game objects
-	public float speed;
-	public Text countText;
-	public Text winText;
-	public GameObject explosionFX;
-	public GameObject pickupFX;
+public class PlayerController : MonoBehaviour
+{
+    public float speed;
+    public Text countText;
+    public Text winText;
+    public GameObject explosionFX;
+    public GameObject pickupFX;
+    public LayerMask groundLayer; // Layer Mask to filter for ground objects
 
-	// Create private references to the rigidbody component on the player, and the count of pick up objects picked up so far
-	private Rigidbody rb;
-	private int count;
-	private AudioSource audioSource;
+    private Rigidbody rb;
+    private int count;
+    private AudioSource audioSource;
+    private Vector3 targetPos;
+    private bool isMoving = false;
 
-
-	// from Roll-a-ball course
-    private float movementX;
-    private float movementY;
-
-    private void OnMove(InputValue movementValue)
+    void Start()
     {
-        Vector2 movementVector = movementValue.Get<Vector2>();
-
-        movementX = movementVector.x;
-        movementY = movementVector.y;
+        rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
+        count = 0;
+        SetCountText();
+        winText.text = "";
     }
+
+	private void Update()
+	{
+		if (Input.GetMouseButton(0)) // Check if left mouse button is held down
+		{
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			
+			if (Physics.Raycast(ray, out hit))
+			{
+				if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+				{
+					targetPos = hit.point;
+					isMoving = true;
+				}
+			}
+		}
+		else
+		{
+			isMoving = false; // Stop moving when mouse button is released
+		}
+	}
+
 
     private void FixedUpdate()
     {
-        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+        if (isMoving)
+        {
+            // Move the player towards the target position
+            Vector3 direction = targetPos - rb.position;
+            direction.Normalize();
+            rb.AddForce(direction * speed);
 
-        rb.AddForce(movement * speed);
+            // Stop moving the player if it is close to the target position
+            if (Vector3.Distance(rb.position, targetPos) < 0.5f)
+            {
+                isMoving = false;
+            }
+        }
     }
-	
-
-	// At the start of the game..
-	void Start ()
-	{
-		// Assign the Rigidbody component to our private rb variable
-		rb = GetComponent<Rigidbody>();
-
-		// Assign the AudioSource component to our private audioSource variable
-		audioSource = GetComponent<AudioSource>();
-
-		// Set the count to zero 
-		count = 0;
-
-		// Run the SetCountText function to update the UI (see below)
-		SetCountText ();
-
-		// Set the text property of our Win Text UI to an empty string, making the 'You Win' (game over message) blank
-		winText.text = "";
-
-	}
-
 
 	// When this game object intersects a collider with 'is trigger' checked, 
 	// store a reference to that collider in a variable named 'other'..
