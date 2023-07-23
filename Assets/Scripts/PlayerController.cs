@@ -18,10 +18,13 @@ public class PlayerController : MonoBehaviour {
 	private Rigidbody rb;
 	private int count;
 	private AudioSource audioSource;
+	private AudioSource gameOverSound;
 
 	// movement variables
     private float movementX;
     private float movementY;
+
+
 
     private void OnMove(InputValue movementValue)
     {
@@ -56,6 +59,8 @@ public class PlayerController : MonoBehaviour {
 
 		// Set the text property of our Win Text UI to an empty string, making the 'You Win' (game over message) blank
 		winText.text = "";
+
+
 
 	}
 
