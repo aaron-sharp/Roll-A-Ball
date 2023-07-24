@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour {
 
 			GameManager.Instance.ReloadScene();
 
-			collision.gameObject.GetComponentInChildren<Animator>().SetFloat("Speed_f", 0);
+			collision.gameObject.GetComponentInChildren<Animator>().SetFloat("speed_f", 0);
 
 			
 		}

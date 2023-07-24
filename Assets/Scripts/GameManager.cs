@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator ReloadSceneCoroutine()
     {
         // Wait for 3 seconds
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(7f);
 
         // Reload the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
