@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour {
 			audioSource.Play();
 
 			// play and destroy pickup fx
-			var currentPickupFX = Instantiate(pickupFX, other.transform.position, other.transform.rotation);
+			var currentPickupFX = Instantiate(pickupFX, other.transform.position, Quaternion.identity);
 			Destroy(currentPickupFX, 3);
 
 		}
