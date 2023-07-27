@@ -37,3 +37,6 @@ Logs
 UserSettings
 Logs
 UserSettings
+
+# Cache
+**/PackageCache/**
